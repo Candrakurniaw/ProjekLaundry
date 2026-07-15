@@ -1,0 +1,103 @@
+/* ---------------------------------------------------------
+     PoS Laundry — "Nota & Drum" visual system
+     Scoped to .pd- prefix so it never leaks into other pages.
+  --------------------------------------------------------- */
+  .pos-dashboard { font-family: 'Plus Jakarta Sans', sans-serif; position: relative; }
+  .pd-display { font-family: 'Fredoka', sans-serif; letter-spacing: -0.01em; }
+  .pd-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ambient bubbles drifting up behind the whole page — very low opacity, decorative only */
+  .pd-bubbles { position: fixed; inset: 0; overflow: hidden; pointer-events: none; z-index: 0; }
+  .pd-bubbles span {
+    position: absolute; bottom: -40px; border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(15,107,114,0.10), rgba(15,107,114,0.02));
+    animation: pd-float 18s linear infinite;
+  }
+  .pd-bubbles span:nth-child(1){ left:8%;  width:22px; height:22px; animation-delay:0s; }
+  .pd-bubbles span:nth-child(2){ left:32%; width:14px; height:14px; animation-delay:4s; }
+  .pd-bubbles span:nth-child(3){ left:58%; width:26px; height:26px; animation-delay:9s; }
+  .pd-bubbles span:nth-child(4){ left:78%; width:16px; height:16px; animation-delay:2s; }
+  .pd-bubbles span:nth-child(5){ left:92%; width:20px; height:20px; animation-delay:12s; }
+  @keyframes pd-float {
+    0%   { transform: translateY(0) scale(1);   opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.4; }
+    100% { transform: translateY(-110vh) scale(1.3); opacity: 0; }
+  }
+
+  /* ---- drum / porthole mark (used for the header avatar) ---- */
+  .pd-drum { position: relative; width: 40px; height: 40px; border-radius: 9999px;
+    background: radial-gradient(circle at 32% 28%, #eaf6f6, #cfe9e9 60%, #a9d9d9);
+    box-shadow: inset 0 0 0 3px rgba(15,107,114,0.35), inset 0 4px 8px rgba(15,107,114,0.25);
+    overflow: hidden; flex-shrink: 0; }
+  .pd-drum .pd-drum-spin { position: absolute; inset: 4px; border-radius: 9999px; animation: pd-spin 9s linear infinite; }
+  .pd-drum .pd-drum-spin i { position: absolute; width: 6px; height: 6px; border-radius: 9999px; }
+  .pd-drum .pd-drum-spin i:nth-child(1){ background:#0F6B72; top:2px; left:14px; }
+  .pd-drum .pd-drum-spin i:nth-child(2){ background:#F5A623; top:14px; left:2px; }
+  .pd-drum .pd-drum-spin i:nth-child(3){ background:#FF8FA3; bottom:2px; right:8px; }
+  @keyframes pd-spin { to { transform: rotate(360deg); } }
+
+  /* ---- hero "ticket" CTA ---- */
+  .pd-ticket {
+    position: relative; overflow: visible;
+    background: linear-gradient(135deg, #0F6B72 0%, #0B4F55 100%);
+    box-shadow: 0 10px 24px -10px rgba(15,107,114,0.55);
+  }
+  .pd-ticket:active { transform: scale(0.98); }
+  .pd-ticket .pd-ticket-badge {
+    width: 34px; height: 34px; border-radius: 9999px; background: rgba(255,255,255,0.16);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .pd-ticket .pd-ticket-badge .pd-drum-spin { animation-duration: 2.4s; }
+  .pd-ticket-bubbles { position: absolute; left: 0; right: 0; bottom: 4px; height: 0; pointer-events: none; }
+  .pd-ticket-bubbles span {
+    position: absolute; bottom: 0; width: 5px; height: 5px; border-radius: 9999px;
+    background: rgba(255,255,255,0.85); animation: pd-rise 3.2s ease-in infinite;
+  }
+  .pd-ticket-bubbles span:nth-child(1){ left: 18%; animation-delay: 0s; }
+  .pd-ticket-bubbles span:nth-child(2){ left: 46%; width:7px; height:7px; animation-delay: 1s; }
+  .pd-ticket-bubbles span:nth-child(3){ left: 68%; animation-delay: 2s; }
+  .pd-ticket-bubbles span:nth-child(4){ left: 85%; width:4px; height:4px; animation-delay: 0.5s; }
+  @keyframes pd-rise {
+    0%   { transform: translateY(0) scale(1);    opacity: 0; }
+    15%  { opacity: 0.9; }
+    100% { transform: translateY(-46px) scale(0.4); opacity: 0; }
+  }
+
+  /* ---- stat "care label" cards ---- */
+  .pd-tag { position: relative; padding-top: 28px !important; }
+  .pd-tag::before {
+    content: ''; position: absolute; top: 10px; left: 20px; width: 12px; height: 12px;
+    border-radius: 9999px; background: var(--pd-page-bg, #F5F8F7);
+    box-shadow: inset 0 1px 3px rgba(15,43,52,0.25), 0 1px 0 rgba(255,255,255,0.6);
+    z-index: 2;
+  }
+  .pd-tag::after {
+    content: ''; position: absolute; top: 16px; left: 32px; right: 16px; height: 1px;
+    background-image: linear-gradient(to right, rgba(15,43,52,0.18) 40%, transparent 0%);
+    background-size: 6px 1px; background-repeat: repeat-x;
+  }
+
+  /* ---- receipt-style transaction row ---- */
+  .pd-item { position: relative; opacity: 0; transform: translateX(-10px); }
+  .pd-item .pd-stripe { width: 4px; align-self: stretch; border-radius: 9999px; flex-shrink: 0; }
+  .pd-dot-pulse { display: inline-block; width: 6px; height: 6px; border-radius: 9999px; margin-right: 4px; }
+  .pd-dot-pulse.on { animation: pd-pulse 1.4s ease-in-out infinite; }
+  @keyframes pd-pulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.35; transform: scale(0.7); } }
+
+  /* ---- FAB ambient ring ---- */
+  .pd-fab { position: relative; }
+  .pd-fab::before {
+    content: ''; position: absolute; inset: -6px; border-radius: 9999px;
+    border: 2px solid rgba(15,107,114,0.35); animation: pd-ring 3.6s ease-out infinite;
+  }
+  @keyframes pd-ring {
+    0%   { transform: scale(0.85); opacity: 0.9; }
+    70%  { transform: scale(1.35); opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pd-bubbles, .pd-ticket-bubbles, .pd-drum-spin, .pd-fab::before, .pd-dot-pulse.on { animation: none !important; }
+    .pd-item { opacity: 1 !important; transform: none !important; }
+  }
